@@ -1,0 +1,43 @@
+//users
+POST http://localhost:3000/users/create HTTP/1.1
+content-type: application/json
+
+{ "username" : "yudi" , 
+   "email" : "yudi@gmail.com", 
+   "password": 123 
+}
+
+###
+POST http://localhost:3000/users/67027b93785a04d1ababc37d/friend-request/67027bc5785a04d1ababc37f HTTP/1.1
+content-type: application/json
+
+###
+GET http://localhost:3000/users/67027bc5785a04d1ababc37f/friends HTTP/1.1
+content-type: application/json
+
+###
+GET http://localhost:3000/users/67027bc5785a04d1ababc37f/friend-requests HTTP/1.1
+content-type: application/json
+
+###
+GET http://localhost:3000/users/67027b93785a04d1ababc37d/sent-friend-requests HTTP/1.1
+content-type: application/json
+
+###
+POST http://localhost:3000/users/67027b93785a04d1ababc37d/accept-friend/67027bc5785a04d1ababc37f HTTP/1.1
+content-type: application/json
+// end users
+
+//chats
+###
+POST http://localhost:3000/chats/send HTTP/1.1
+content-type: application/json
+
+{ "from" : "67027bc5785a04d1ababc37f" , 
+   "to" : "67027b93785a04d1ababc37d", 
+   "message": "hallo"
+}
+
+###
+GET http://localhost:3000/chats/67027b93785a04d1ababc37d/67027bc5785a04d1ababc37f HTTP/1.1
+content-type: application/json
