@@ -14,8 +14,13 @@ export class ChatsController {
     return this.chatsService.sendMessage(from, to, message);
   }
 
-  @Get(':userId/:friendId')
+  @Get('current/:userId/:friendId')
   getMessages(@Param('userId') userId: string, @Param('friendId') friendId: string) {
     return this.chatsService.getMessages(userId, friendId);
+  }
+
+  @Get('recent/:userId')
+  getRecentChats(@Param('userId') userId: string) {
+    return this.chatsService.getRecentChats(userId);
   }
 }

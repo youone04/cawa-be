@@ -27,7 +27,7 @@ export class UsersController {
   @Get(':userId/friends')
   getFriends(@Param('userId') userId: string) {
     return this.usersService.getFriendsOnline(userId);
-    return this.usersService.getFriends(userId);
+    // return this.usersService.getFriends(userId);
   }
 
   @Get(':userId/friend-requests')
