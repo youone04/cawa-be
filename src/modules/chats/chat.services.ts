@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Chat } from 'src/utils/shcema/chat.schema/Chat.schema';
 
 @Injectable()
@@ -20,33 +20,6 @@ export class ChatsService {
       ]
     }).exec();
   }
-
-  // async getRecentChats(userId: string) {
-  //   return this.chatModel.aggregate([
-  //     {
-  //       $match: {
-  //         $or: [
-  //           { from: userId },
-  //           { to: userId }
-  //         ]
-  //       }
-  //     },
-  //     {
-  //       $group: {
-  //         _id: {
-  //           $cond: [
-  //             { $eq: ['$from', userId] }, '$to', '$from'
-  //           ]
-  //         },
-  //         lastMessage: { $last: '$message' },
-  //         lastTimestamp: { $last: '$timestamp' }
-  //       }
-  //     },
-  //     {
-  //       $sort: { lastTimestamp: -1 }
-  //     }
-  //   ]).exec();
-  // }
 
   async getRecentChats(userId: string) {
     return this.chatModel.aggregate([
