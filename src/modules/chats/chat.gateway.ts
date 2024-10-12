@@ -1,4 +1,4 @@
-//1
+//v1
 
 import {
   SubscribeMessage,
@@ -11,7 +11,6 @@ import { Model } from 'mongoose';
 import { Server, Socket } from 'socket.io';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/utils/shcema/user.schema/User.schema';
-
 
 @WebSocketGateway(8900, {
   cors: {
@@ -36,23 +35,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('disconnect', this.users)
   }
 
-  // @SubscribeMessage('disconnectMod')
-  // async handleModDisconnect(_, userId: string) {
-  //   console.log('userId disconnectMod', userId)
-  //   const user = await this.userModel.findById(userId).populate('friends');
-  //   const friendsOnline = Array.from(this.users.keys()).filter(friendId =>
-  //     user.friends.includes(friendId),
-  //   );
-
-  //   friendsOnline.forEach(idFriends => {
-  //     const friendsOnline3 = Array.from(this.users.keys()).filter(friendId =>
-  //       friendId === userId
-  //     );
-  //     console.log('friendsOnline3', friendsOnline3)
-  //     this.server.to(this.getUserSocketId(idFriends)).emit('getFriendsOnline', friendsOnline3);
-  //   })
-  // }
-
   private getUserSocketId(userId: string): string | undefined {
     return this.users.get(userId);
   }
@@ -74,9 +56,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
 
     this.server.to(this.getUserSocketId(userId)).emit('getFriendsOnline', friendsOnOfflineline);
-    // const friendsOnline2 = Array.from(this.users.keys()).filter(friendId => friendId === userId);
-    // console.log('user.friends',user.friends)
-
     const emitPromises = user.friends.map(async (idFriends) => {
       const userFriends = await this.userModel.findById(idFriends).populate('friends');
 
@@ -105,7 +84,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     for (const [userId, sid] of this.users.entries()) {
       if (sid === socketId) {
         this.users.delete(userId);
-        // console.log('userId remove', userId)
 
         //kunci remove saat offline
         this.notifyFriendsOfOnlineUsers(userId);
