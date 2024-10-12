@@ -14,6 +14,11 @@ export class UsersController {
     return this.usersService.createUser(username, email, password);
   }
 
+  @Post('login')
+  login(@Body('username') username: string, @Body('password') password: string) {
+    return this.usersService.login(username, password);
+  }
+
   @Post(':userId/friend-request/:targetUserId')
   sendFriendRequest(@Param('userId') userId: string, @Param('targetUserId') targetUserId: string) {
     return this.usersService.sendFriendRequest(userId, targetUserId);
@@ -26,8 +31,8 @@ export class UsersController {
 
   @Get(':userId/friends')
   getFriends(@Param('userId') userId: string) {
-    return this.usersService.getFriendsOnline(userId);
-    // return this.usersService.getFriends(userId);
+    // return this.usersService.getFriendsOnline(userId);
+    return this.usersService.getFriends(userId);
   }
 
   @Get(':userId/friend-requests')

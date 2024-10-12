@@ -12,6 +12,32 @@ export class UsersService {
     return newUser.save();
   }
 
+  async login(username: string, password: string): Promise<any> {
+   try{
+    const resLogin =  this.userModel.findOne({ username, password })
+    .select({ _id: 1, username: 1, email: 1}).exec();
+    const isLogin = await resLogin
+
+    if(isLogin){
+      return {
+        status: 200,
+        message: 'Login success',
+        data: isLogin
+      }
+
+    }else{
+      return {
+        status: 401,
+        message: 'Invalid username or password'
+  
+      }
+    }
+
+  }catch(err){
+     throw err
+  }
+   }
+
 //   mencari data by userId
   async getUserById(userId: string): Promise<User> {
     return this.userModel.findById(userId).exec();
