@@ -101,16 +101,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('sendMessage')
   handleSendMessage(
     client: Socket,
-    payload: { senderId: string; receiverId: string; text: string },
+    payload: { from: string; to: string; message: string },
 
   ) {
     console.log('payload', payload)
-    const receiverSocketId = this.getUserSocketId(payload.receiverId);
+    const receiverSocketId = this.getUserSocketId(payload.to);
     if (receiverSocketId) {
       // Mengirim pesan hanya ke user dengan receiverId
       this.server.to(receiverSocketId).emit('getMessage', {
-        senderId: payload.senderId,
-        text: payload.text,
+        from: payload.from, //senderId
+        message: payload.message, //text
+        to: payload.to,//receiverId
+        timestamp: Date.now(),
       });
     }
   }
