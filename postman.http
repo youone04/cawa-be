@@ -34,16 +34,21 @@ content-type: application/json
 ###
 POST http://localhost:3000/users/67027b93785a04d1ababc37d/accept-friend/6703ad940701213a547ac304 HTTP/1.1
 content-type: application/json
+
+###
+GET http://localhost:3001/users/6703ad940701213a547ac304/profile HTTP/1.1
+content-type: application/json
+
 // end users
 
 //chats
 ###
-POST http://localhost:3000/chats/send HTTP/1.1
+POST http://localhost:3001/chats/send HTTP/1.1
 content-type: application/json
 
-{ "from" : "6703ad940701213a547ac304" , 
+{ "from" : "67027bc5785a04d1ababc37f" , 
    "to" : "67027b93785a04d1ababc37d", 
-   "message": "hallo senin 2"
+   "message": "hallo 7D from 7F"
 }
 
 ###

@@ -101,7 +101,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('sendMessage')
   handleSendMessage(
     client: Socket,
-    payload: { from: string; to: string; message: string },
+    payload: { from: string; to: string; message: string; username:string },
 
   ) {
     console.log('payload', payload)
@@ -112,6 +112,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         from: payload.from, //senderId
         message: payload.message, //text
         to: payload.to,//receiverId
+        username: payload.username,
         timestamp: Date.now(),
       });
     }

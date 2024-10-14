@@ -44,4 +44,9 @@ export class UsersController {
   getSentFriendRequests(@Param('userId') userId: string) {
     return this.usersService.getSentFriendRequests(userId);
   }
+
+  @Get(':userId/profile')
+  getProfile(@Param('userId') userId: string) {
+    return this.usersService.getProfile(userId);
+  }
 }

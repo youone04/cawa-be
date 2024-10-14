@@ -96,6 +96,11 @@ export class UsersService {
     const user = await this.userModel.findById(userId).exec();
     return user.sentFriendRequests;
   }
+
+  async getProfile(idUser: string): Promise<any> {
+    return await this.getUserById(idUser);
+
+  }
   
   
 }
