@@ -113,7 +113,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         message: payload.message, //text
         to: payload.to,//receiverId
         username: payload.username,
-        timestamp: Date.now(),
+        lastTimestamp: new Date(Date.now()).toISOString()
       });
     }
   }
