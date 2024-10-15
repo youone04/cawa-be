@@ -49,4 +49,9 @@ export class UsersController {
   getProfile(@Param('userId') userId: string) {
     return this.usersService.getProfile(userId);
   }
+
+  @Get(':userId/pin/:pin')
+  getUserByPin( @Param('userId') userId: string, @Param('pin') pin: string,) {
+    return this.usersService.getUserByPin(userId, pin);
+  }
 }

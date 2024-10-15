@@ -1,44 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { PinService } from 'src/common/pin.service';
 import { User } from 'src/utils/shcema/user.schema/User.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
 
-  async createUser(username: string, email: string, password: string): Promise<User> {
-    const newUser = new this.userModel({ username, email, password});
+  async createUser(username: string, email: string, password: string): Promise<any> {
+    const pin = new PinService().generatePin(24);
+    const newUser = new this.userModel({ username, email, password, pin });
     return newUser.save();
   }
 
   async login(username: string, password: string): Promise<any> {
-   try{
-    const resLogin =  this.userModel.findOne({ username, password })
-    .select({ _id: 1, username: 1, email: 1}).exec();
-    const isLogin = await resLogin
+    try {
+      const resLogin = this.userModel.findOne({ username, password })
+        .select({ _id: 1, username: 1, email: 1 }).exec();
+      const isLogin = await resLogin
 
-    if(isLogin){
-      return {
-        status: 200,
-        message: 'Login success',
-        data: isLogin
+      if (isLogin) {
+        return {
+          status: 200,
+          message: 'Login success',
+          data: isLogin
+        }
+
+      } else {
+        return {
+          status: 401,
+          message: 'Invalid username or password'
+
+        }
       }
 
-    }else{
-      return {
-        status: 401,
-        message: 'Invalid username or password'
-  
-      }
+    } catch (err) {
+      throw err
     }
-
-  }catch(err){
-     throw err
   }
-   }
 
-//   mencari data by userId
+  //   mencari data by userId
   async getUserById(userId: string): Promise<User> {
     return this.userModel.findById(userId).exec();
   }
@@ -97,12 +99,35 @@ export class UsersService {
     return user.sentFriendRequests;
   }
 
-  async getProfile(idUser: string): Promise<any> {
+  async getProfile(idUser: string): Promise<User> {
     return await this.getUserById(idUser);
 
   }
-  
-  
-}
 
+  async getUserByPin(userId: string, pin: string): Promise<any> {
+    const result = await this.userModel.aggregate([
+      {
+        $match: { pin }
+      },
+      {
+        $project: {
+          _id: 1,
+          isFriend: {
+            $cond: { if: { $in: [userId, "$friends"] }, then: true, else: false }
+          },
+          friends: 1,
+          username: 1,
+          name: 1,
+          email: 1
+
+        }
+      }
+    ]);
+
+    return {
+      status: 200,
+      data: result[0] || {}
+    };
+  }
+}
 

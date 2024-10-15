@@ -1,9 +1,9 @@
 //users
-POST http://localhost:3000/users/create HTTP/1.1
+POST http://localhost:3001/users/create HTTP/1.1
 content-type: application/json
 
-{ "username" : "youone" , 
-   "email" : "youone@gmail.com", 
+{ "username" : "gunawan" , 
+   "email" : "gunawan@gmail.com", 
    "password": 123 
 }
 
@@ -36,7 +36,11 @@ POST http://localhost:3000/users/67027b93785a04d1ababc37d/accept-friend/6703ad94
 content-type: application/json
 
 ###
-GET http://localhost:3001/users/6703ad940701213a547ac304/profile HTTP/1.1
+GET http://localhost:3001/users/67027b93785a04d1ababc37d/profile HTTP/1.1
+content-type: application/json
+
+###
+GET http://localhost:3001/users/670ef9a2385761c4723f50e7/pin/59D175 HTTP/1.1
 content-type: application/json
 
 // end users
