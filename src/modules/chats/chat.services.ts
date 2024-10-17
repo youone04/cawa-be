@@ -31,6 +31,7 @@ export class ChatsService {
           ]
         }
       },
+
       {
         $group: {
           _id: {
@@ -42,11 +43,13 @@ export class ChatsService {
           lastTimestamp: { $last: '$timestamp' }
         }
       },
+
       {
         $addFields: {
           friendId: { $toObjectId: '$_id' }  // Konversi _id ke ObjectId jika diperlukan
         }
       },
+
       {
         $lookup: {
           from: 'users',
@@ -55,9 +58,11 @@ export class ChatsService {
           as: 'friendData'
         }
       },
+
       {
         $unwind: '$friendData'
       },
+      
       {
         $project: {
           _id: 0,

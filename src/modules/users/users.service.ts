@@ -90,13 +90,124 @@ export class UsersService {
   }
 
   async getFriendRequests(userId: string): Promise<string[]> {
-    const user = await this.userModel.findById(userId).exec();
-    return user.friendRequests;
+
+    // 1. $unwind :
+    // before: "friendRequests": [
+    //         "670f3776a970eb4dbb02d57c",
+    //          "670ef9a2385761c4723f50e7"
+    //     ],
+
+    // after: 
+  //   [
+  //     {
+  //         "_id": "670ef991385761c4723f50e5",
+  //         "username": "youone",
+  //         "email": "youone@gmail.com",
+  //         "pin": "59D175",
+  //         "password": "123",
+  //         "friends": [],
+  //         "friendRequests": "670f3776a970eb4dbb02d57c",
+  //         "sentFriendRequests": [],
+  //         "__v": 2
+  //     },
+  //     {
+  //         "_id": "670ef991385761c4723f50e5",
+  //         "username": "youone",
+  //         "email": "youone@gmail.com",
+  //         "pin": "59D175",
+  //         "password": "123",
+  //         "friends": [],
+  //         "friendRequests": "670ef9a2385761c4723f50e7",
+  //         "sentFriendRequests": [],
+  //         "__v": 2
+  //     }
+  // ]
+
+    // 2. $lookup (join jika dalam sql)
+    // untuk debug, bisa di komen satu satu gimana hasilnya
+
+
+
+    const user = await this.userModel.aggregate([
+      {
+        $match: { _id: new Types.ObjectId(userId) }  // Cari user berdasarkan ID
+      }
+      ,
+      {
+        $unwind: '$friendRequests'  // Pisahkan friendRequests array menjadi elemen individual
+      }
+      ,
+      {
+        $addFields: {  // Konversi friendRequests ke ObjectId
+          friendRequests: { $toObjectId: '$friendRequests' }//dari data parent
+        }
+      }
+      ,
+      {
+        $lookup: { //join
+          from: 'users',  // Koleksi users tempat kita akan mencari data teman
+          localField: 'friendRequests',  // Field friendRequests yang berisi daftar ID teman
+          foreignField: '_id',  // Field _id di koleksi users
+          as: 'friendInfo'  // Nama hasil join
+        }
+      },
+      {
+        $unwind: '$friendInfo'  // Pisahkan array friendInfo menjadi objek individual
+      },
+      {
+        $project: {
+          _id: '$friendInfo._id',  // Ambil _id dari user di friendRequests
+          username: '$friendInfo.username'  // Ambil username dari user di friendRequests
+        }
+      }
+    ])
+    .exec();
+    return user    
   }
 
+  //TODO:
   async getSentFriendRequests(userId: string): Promise<string[]> {
-    const user = await this.userModel.findById(userId).exec();
-    return user.sentFriendRequests;
+    // const user = await this.userModel.findById(userId).exec();
+    // return user.sentFriendRequests;
+
+    const user = await this.userModel.aggregate([
+      {
+        $match: { _id: new Types.ObjectId(userId) }  // Cari user berdasarkan ID
+      }
+      ,
+      {
+        $unwind: '$sentFriendRequests'  // Pisahkan friendRequests array menjadi elemen individual
+      }
+      ,
+      {
+        $addFields: {  // Konversi friendRequests ke ObjectId
+          sentFriendRequests: { $toObjectId: '$sentFriendRequests' }//dari data parent
+        }
+      }
+      ,
+      {
+        $lookup: {//join
+          from: 'users',  // Koleksi users tempat kita akan mencari data teman
+          localField: 'sentFriendRequests',  // Field friendRequests yang berisi daftar ID teman
+          foreignField: '_id',  // Field _id di koleksi users
+          as: 'friendInfo'  // Nama kolom join
+        }
+      },
+      {
+        $unwind: '$friendInfo'  // Pisahkan array friendInfo menjadi objek individual
+      },
+      {
+        $project: {
+          _id: '$friendInfo._id',  // Ambil _id dari user di sentFriendRequests
+          username: '$friendInfo.username'  // Ambil username dari user di sentFriendRequests
+        }
+      }
+      
+    ])
+
+    return user
+
+    
   }
 
   async getProfile(idUser: string): Promise<User> {
@@ -114,6 +225,9 @@ export class UsersService {
           _id: 1,
           isFriend: {
             $cond: { if: { $in: [userId, "$friends"] }, then: true, else: false }
+          },
+          isSentRequest: {
+            $cond: { if: { $in: [userId, "$friendRequests"] }, then: true, else: false }
           },
           friends: 1,
           username: 1,

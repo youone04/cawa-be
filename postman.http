@@ -2,8 +2,8 @@
 POST http://localhost:3001/users/create HTTP/1.1
 content-type: application/json
 
-{ "username" : "gunawan" , 
-   "email" : "gunawan@gmail.com", 
+{ "username" : "yudi" , 
+   "email" : "yudi@gmail.com", 
    "password": 123 
 }
 
@@ -24,11 +24,11 @@ GET http://localhost:3001/users/6703ad940701213a547ac304/friends HTTP/1.1
 content-type: application/json
 
 ###
-GET http://localhost:3000/users/67027bc5785a04d1ababc37f/friend-requests HTTP/1.1
+GET http://localhost:3001/users/670ef991385761c4723f50e5/friend-requests HTTP/1.1
 content-type: application/json
 
 ###
-GET http://localhost:3000/users/67027b93785a04d1ababc37d/sent-friend-requests HTTP/1.1
+GET http://localhost:3001/users/670ef9a2385761c4723f50e7/sent-friend-requests HTTP/1.1
 content-type: application/json
 
 ###
